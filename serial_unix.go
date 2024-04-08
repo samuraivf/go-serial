@@ -146,9 +146,11 @@ func (p *Port) Read(b []byte) (int, error) {
 		res, err := unixutils.Select(fds, nil, fds, deadline.Sub(now))
 		defer func() {
 			res = nil
+			buf = nil
 		}()
 		if err != nil {
 			if errors.Is(err, unix.EINTR) {
+				res = nil
 				continue
 			}
 			return read, newPortOSError(err)
@@ -164,6 +166,7 @@ func (p *Port) Read(b []byte) (int, error) {
 		n, err := unix.Read(p.internal.handle, buf[read:])
 		if err != nil {
 			if errors.Is(err, unix.EINTR) {
+				res = nil
 				continue
 			}
 			return read, newPortOSError(err)
@@ -216,6 +219,7 @@ func (p *Port) Write(b []byte) (int, error) {
 		defer func() {
 			res = nil
 		}()
+		
 		if err != nil {
 			return written, newPortOSError(err)
 		}
@@ -227,6 +231,8 @@ func (p *Port) Write(b []byte) (int, error) {
 		if !res.IsWritable(p.internal.handle) {
 			return written, &PortError{code: WriteFailed}
 		}
+
+		res = nil
 	}
 	return written, nil
 }
