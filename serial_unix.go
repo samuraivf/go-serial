@@ -11,7 +11,6 @@ package serial
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"path"
 	"regexp"
@@ -148,7 +147,6 @@ func (p *Port) Read(b []byte) (int, error) {
 		defer func() {
 			res = nil
 			buf = nil
-			fmt.Println("123")
 		}()
 		if err != nil {
 			if errors.Is(err, unix.EINTR) {
