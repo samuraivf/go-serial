@@ -52,7 +52,7 @@
 
 ## 2.0.0
 
-- New Go Module import path `github.com/albenik/go-serial/v2`
+- New Go Module import path `github.com/samuraivf/go-serial/v2`
 - `serial.Port` interface discarded in favor of `serial.Port` structure (similar to `os.File`)
 - `serial.Mode` discarded and replaced with `serial.Option`
 - `serial.Open()` method changed to use `serila.Option`)

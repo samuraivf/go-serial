@@ -21,7 +21,7 @@ import (
 	"go.uber.org/multierr"
 	"golang.org/x/sys/unix"
 
-	"github.com/albenik/go-serial/v2/unixutils"
+	"github.com/samuraivf/go-serial/v2/unixutils"
 )
 
 const FIONREAD = 0x541B
@@ -144,6 +144,9 @@ func (p *Port) Read(b []byte) (int, error) {
 
 	for read < size {
 		res, err := unixutils.Select(fds, nil, fds, deadline.Sub(now))
+		defer func() {
+			res = nil
+		}()
 		if err != nil {
 			if errors.Is(err, unix.EINTR) {
 				continue
@@ -210,6 +213,9 @@ func (p *Port) Write(b []byte) (int, error) {
 		}
 
 		res, err := unixutils.Select(clFds, fds, fds, deadline.Sub(now))
+		defer func() {
+			res = nil
+		}()
 		if err != nil {
 			return written, newPortOSError(err)
 		}
