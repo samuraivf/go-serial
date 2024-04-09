@@ -146,6 +146,7 @@ func (p *Port) Read(b []byte) (int, error) {
 		res, err := unixutils.Select(fds, nil, fds, deadline.Sub(now))
 		defer func() {
 			res = nil
+			fds = nil
 			buf = nil
 		}()
 		if err != nil {
@@ -217,6 +218,7 @@ func (p *Port) Write(b []byte) (int, error) {
 
 		res, err := unixutils.Select(clFds, fds, fds, deadline.Sub(now))
 		defer func() {
+			fds = nil
 			res = nil
 		}()
 
