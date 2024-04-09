@@ -130,6 +130,8 @@ func (p *Port) ReadyToRead() (uint32, error) {
 	return uint32(n), nil
 }
 
+var buf []byte
+
 func (p *Port) Read(b []byte) (int, error) {
 	if err := p.checkValid(); err != nil {
 		return 0, err
@@ -137,11 +139,7 @@ func (p *Port) Read(b []byte) (int, error) {
 
 	size, read := len(b), 0
 	fds := unixutils.NewFDSet(p.internal.handle, p.internal.closePipeR)
-	buf := make([]byte, size)
-
-	defer func() {
-		buf = nil
-	}()
+	buf = make([]byte, size)
 
 	now := time.Now()
 	deadline := now.Add(time.Duration(p.internal.readTimeout) * time.Millisecond)
