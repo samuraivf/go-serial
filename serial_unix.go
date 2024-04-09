@@ -145,8 +145,10 @@ func (p *Port) Read(b []byte) (int, error) {
 	for read < size {
 		res, err := unixutils.Select(fds, nil, fds, deadline.Sub(now))
 		defer func() {
-			res.Clear()
-			res = nil
+			if res != nil {
+				res.Clear()
+				res = nil
+			}
 			buf = nil
 		}()
 
