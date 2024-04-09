@@ -219,8 +219,10 @@ func (p *Port) Write(b []byte) (int, error) {
 
 		res, err := unixutils.Select(clFds, fds, fds, deadline.Sub(now))
 		defer func() {
-			res.Clear()
-			res = nil
+			if res != nil {
+				res.Clear()
+				res = nil
+			}
 		}()
 
 		if err != nil {
@@ -235,6 +237,7 @@ func (p *Port) Write(b []byte) (int, error) {
 			return written, &PortError{code: WriteFailed}
 		}
 
+		res.Clear()
 		res = nil
 	}
 	return written, nil
