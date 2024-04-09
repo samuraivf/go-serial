@@ -74,7 +74,6 @@ func Select(rd, wr, er *FDSet, timeout time.Duration) (*FDResultSets, error) {
 		// fdsets are copied so the parameters are left untouched
 		copyOfRd := rd.set
 		res.readable = &copyOfRd
-		copyOfRd.Zero()
 		// Determine max fd.
 		maxval = rd.max
 	}
@@ -82,7 +81,6 @@ func Select(rd, wr, er *FDSet, timeout time.Duration) (*FDResultSets, error) {
 		// fdsets are copied so the parameters are left untouched
 		copyOfWr := wr.set
 		res.writeable = &copyOfWr
-		copyOfWr.Zero()
 		// Determine max fd.
 		if wr.max > maxval {
 			maxval = wr.max
@@ -92,7 +90,6 @@ func Select(rd, wr, er *FDSet, timeout time.Duration) (*FDResultSets, error) {
 		// fdsets are copied so the parameters are left untouched
 		copyOfEr := er.set
 		res.errors = &copyOfEr
-		copyOfEr.Zero()
 		// Determine max fd.
 		if er.max > maxval {
 			maxval = er.max
