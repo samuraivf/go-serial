@@ -40,9 +40,9 @@ func (s *FDSet) Add(fds ...int) {
 
 // FDResultSets contains the result of a Select operation.
 type FDResultSets struct {
-	readable  *goselect.FDSet
-	writeable *goselect.FDSet
-	errors    *goselect.FDSet
+	readable  goselect.FDSet
+	writeable goselect.FDSet
+	errors    goselect.FDSet
 }
 
 // IsReadable test if a file descriptor is ready to be read.
@@ -72,15 +72,13 @@ func Select(rd, wr, er *FDSet, timeout time.Duration) (*FDResultSets, error) {
 	res := &FDResultSets{}
 	if rd != nil {
 		// fdsets are copied so the parameters are left untouched
-		copyOfRd := rd.set
-		res.readable = &copyOfRd
+		res.readable = rd.set
 		// Determine max fd.
 		maxval = rd.max
 	}
 	if wr != nil {
 		// fdsets are copied so the parameters are left untouched
-		copyOfWr := wr.set
-		res.writeable = &copyOfWr
+		res.writeable = wr.set
 		// Determine max fd.
 		if wr.max > maxval {
 			maxval = wr.max
@@ -88,14 +86,13 @@ func Select(rd, wr, er *FDSet, timeout time.Duration) (*FDResultSets, error) {
 	}
 	if er != nil {
 		// fdsets are copied so the parameters are left untouched
-		copyOfEr := er.set
-		res.errors = &copyOfEr
+		res.errors = er.set
 		// Determine max fd.
 		if er.max > maxval {
 			maxval = er.max
 		}
 	}
 
-	err := goselect.Select(int(maxval+1), res.readable, res.writeable, res.errors, timeout)
+	err := goselect.Select(int(maxval+1), &res.readable, &res.writeable, &res.errors, timeout)
 	return res, err
 }
