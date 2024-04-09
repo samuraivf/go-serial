@@ -67,9 +67,9 @@ func (r *FDResultSets) IsError(fd int) bool {
 // The function will block until an event happens or the timeout expires.
 // The function return an FDResultSets that contains all the file descriptor
 // that have a pending read/write/error event.
-func Select(rd, wr, er *FDSet, timeout time.Duration) (*FDResultSets, error) {
+func Select(rd, wr, er *FDSet, timeout time.Duration) (FDResultSets, error) {
 	maxval := uintptr(0)
-	res := &FDResultSets{}
+	res := FDResultSets{}
 	if rd != nil {
 		// fdsets are copied so the parameters are left untouched
 		res.readable = rd.set
