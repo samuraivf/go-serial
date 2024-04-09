@@ -60,6 +60,12 @@ func (r *FDResultSets) IsError(fd int) bool {
 	return r.errors.IsSet(uintptr(fd))
 }
 
+func (r *FDResultSets) Clear() {
+	r.readable.Zero()
+	r.writeable.Zero()
+	r.errors.Zero()
+}
+
 // Select performs a select system call,
 // file descriptors in the rd set are tested for read-events,
 // file descriptors in the wd set are tested for write-events and
