@@ -61,9 +61,17 @@ func (r *FDResultSets) IsError(fd int) bool {
 }
 
 func (r *FDResultSets) Clear() {
-	r.readable.Zero()
-	r.writeable.Zero()
-	r.errors.Zero()
+	if r.readable != nil {
+		r.readable.Zero()
+	}
+
+	if r.writeable != nil {
+		r.writeable.Zero()
+	}
+	
+	if r.errors != nil {
+		r.errors.Zero()
+	}
 }
 
 // Select performs a select system call,
